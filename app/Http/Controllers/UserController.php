@@ -5,6 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Spatie\QueryBuilder\QueryBuilder;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
+use League\Fractal\Serializer\ArraySerializer;
+use App\Transformers\UserTransformer;
+use League\Fractal\Resource\Collection;
+use Spatie\Fractal\Fractal;
 
 class UserController extends Controller
 {
@@ -17,9 +23,21 @@ class UserController extends Controller
     {
         $users = User::all();
 
+        $users = QueryBuilder::for(User::class)
+            ->allowedFilters(['name', 'email', 'id']);
+
+        $pagination = $users->paginate(2);
+        $users = $pagination->appends(request()->query());
+
+        $response = Fractal::create()
+            ->collection($users, new UserTransformer())
+            ->serializeWith(new ArraySerializer)
+            ->paginateWith(new IlluminatePaginatorAdapter($pagination))
+            ->toArray();
+
         return response()->json([
             'success' => true,
-            'data' => $users->toArray()
+            'data' => $response
         ]);
     }
 
