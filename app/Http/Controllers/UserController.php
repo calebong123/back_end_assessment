@@ -11,6 +11,8 @@ use League\Fractal\Serializer\ArraySerializer;
 use App\Transformers\UserTransformer;
 use League\Fractal\Resource\Collection;
 use Spatie\Fractal\Fractal;
+use App\Imports\ImportUsers;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -160,6 +162,28 @@ class UserController extends Controller
                 'success' => false,
                 'message' => 'user can not be deleted'
             ], 500);
+        }
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'import_file' => 'required|mimes:xlsx,csv|max:2048'
+        ]);
+
+        //complete
+        if ($request->file('import_file')) {
+            Excel::import(new ImportUsers, request()->file('import_file'));
+
+            return response()->json([
+                'success' => true,
+                'import' => 'success',
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'key' => ' as import_file'
+            ]);
         }
     }
 }

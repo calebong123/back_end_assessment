@@ -21,4 +21,5 @@ Route::post('login', [PassportAuthController::class, 'login']);
 
 Route::middleware('auth:api')->group(function () {
     Route::resource('user', UserController::class);
+    Route::post('user/import', '\App\Http\Controllers\UserController@import')->name('user.import');
 });
