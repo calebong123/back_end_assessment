@@ -168,7 +168,7 @@ class UserController extends Controller
     public function import(Request $request)
     {
         $request->validate([
-            'import_file' => 'required|mimes:xlsx,csv|max:2048'
+            'import_file' => 'required|file|mimes:xlsx,csv,txt'
         ]);
 
         //complete
