@@ -14,7 +14,7 @@ class AddImportedToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('imported')->nullable()->change();
+            $table->string('imported')->nullable();
         });
     }
 
