@@ -17,7 +17,7 @@ class ImportUsers implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         //delete
-        if ($row['imported'] == '0') {
+        if ($row['imported'] == '0' || $row['imported'] == 'FALSE') {
             User::where('id', $row['id'])->delete();
             return null;
         }
